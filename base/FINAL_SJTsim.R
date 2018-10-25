@@ -8,11 +8,11 @@ library(data.table)
 
 # (1) Initialize numer of parallel processors to use
 ## Option 1: For running on local computer with multiple cores. Warning: This will use the maximum number of cores available on the computer if possible!
-#sfInit(parallel = T, cpus = min(nrow(conds), detectCores()), type = "SOCK")
+sfInit(parallel = T, cpus = min(nrow(conds), detectCores()), type = "SOCK")
 
 ## Option 2: For running on cores distributed across multiple computers/nodes
-sfSetMaxCPUs(number = 1000)
-sfInit(parallel = T, cpus = 250, type = "MPI")
+# sfSetMaxCPUs(number = 1000)
+# sfInit(parallel = T, cpus = 250, type = "MPI")
 
 ## (2) Specify experimental conditions to run and create SJT that will be used for all simulations
 conds <- expand.grid(exptLvl = 1:5, expStrength = 5:8)
