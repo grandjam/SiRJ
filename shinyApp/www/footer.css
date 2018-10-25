@@ -1,0 +1,47 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.container-fluid {
+  flex: 1 0 auto;
+}
+
+.footer {
+  flex-shrink: 0;
+  background: #2C3E50;
+  padding: 5px 15px;
+  color: white;
+}
+
+.footer a {
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0px 15px;
+}
+
+.footer a:hover {
+  text-decoration: none;
+}
+
+.alignRight {
+    float: right;
+}
+
+.alignedTable {
+  width: 100%;
+  display: table;
+}
+
+.alignedTable .row {
+  display: table-row;
+}
+
+.alignedTable .row .cell {
+  vertical-align: middle;
+  display: table-cell;
+}
