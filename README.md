@@ -6,4 +6,5 @@ The material in this repository is organized into three sections:
 1. The **base** folder contains all code for running and conducting simulations with the base SiRJ model. Base SiRJ corresponds directly to the original model as described and presented in Figure 1 of CITATION REDACTED FOR BLIND REVIEW. *Users wishing to adapt and extend the base functionality of SiRJ should use the code contained in this folder.*
 2. The **paperSims** folder contains all code for replicating the virtual experiments and analyses reported in CITATION REDACTED.
 3. The **shinyApp** folder contains all code used to construct the interactive web application (https://grandjam.shinyapps.io/sirj) that accompanies the original paper. This code is provided for users wishing to understand and/or adapt the structure of this app for their own purposes.
+
 Each folder contains its own README file explaining its content and instructions for using the code.
