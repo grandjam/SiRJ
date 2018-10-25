@@ -7,4 +7,4 @@ The material in this repository is organized into three sections:
 2. The **paperSims** folder contains all code for replicating the virtual experiments and analyses reported in CITATION REDACTED.
 3. The **shinyApp** folder contains all code used to construct the interactive web application (https://grandjam.shinyapps.io/sirj) that accompanies the original paper. This code is provided for users wishing to understand and/or adapt the structure of this app for their own purposes.
 
-Each folder contains its own README file explaining its content and instructions for using the code. All code for the SiRJ model and simulations was constructed in the open-source [R programming environment] (https://cran.r-project.org/) and requires the user to have downloaded and installed the latest version of the software to use.
+Each folder contains its own README file explaining its content and instructions for using the code. All code for the SiRJ model and simulations was constructed in the open-source [R programming environment](https://cran.r-project.org/) and requires the user to have downloaded and installed the latest version of the software to use.
