@@ -1,10 +1,3 @@
-# TO DOs
-# (1) Add link to OSF page once created
-# 
-# Haven't seen this in awhile...maybe fixed?
-# > ERROR HAPPENS WHEN LOADING UP HYGENE TAB. OCCURS ON LINE #116 OF HYGENEFUNCS WITH THE IF STATEMENT (MISSING VALUE WHERE TRUE/FALSE NEEDED).
-# > Think it has something to do with what is returned from the tActLvl function, but not sure if it is a function of a bad probe or bad memory traces
-
 library(shiny)
 library(shinythemes)
 library(shinyjs)
@@ -125,8 +118,8 @@ shinyApp(
     navbarPage(title = "Situated Reasoning & Judgment", id = "mainNavBar", theme = shinytheme("flatly"),
       homeTab,
       hyGeneTab,
-      sirjTab,
-      tabPanel(title = "OSF Page")
+      sirjTab
+      # Link to OSF page is written at top of SiRJUI file
     ),
     tags$footer(class = "footer",
       extendShinyjs(text = jumpTop),
@@ -136,7 +129,7 @@ shinyApp(
             a(class = "footer", id = "homeFooterLink", "Home"),
             a(class = "footer", id = "hygeneFooterLink", "HyGene"),
             a(class = "footer", id = "sirjFooterLink", "SiRJ"),
-            a(class = "footer", id = "osfFooterLink", "OSF Page")
+            a(class = "footer", id = "osfFooterLink", href = "https://bit.ly/2mFQfc5", target = "_blank", "OSF Page")
           ),
           div(class = "cell alignRight",
             h5(icon("copyright"), "2018, AUTHOR NAME [EMAIL]")
