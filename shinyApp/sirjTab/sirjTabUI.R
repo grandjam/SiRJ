@@ -1,5 +1,5 @@
 sirjTab <-
-  tabPanel(title = "SiRJ",
+  tabPanel(title = HTML("SiRJ</a></li><li><a href = 'https://bit.ly/2mFQfc5' target = '_blank'>OSF Page"),
     fluidRow(
       column(width = 11, offset = 0.5,
         h3(icon("angle-double-right"), "Description", style = "font-weight: bold"),
