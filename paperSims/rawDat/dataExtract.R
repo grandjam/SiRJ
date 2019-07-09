@@ -3,17 +3,23 @@ library(data.table)
 # Combine data files from simulation runs #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # Get file names of each simulation run
-datSitFileNames <- list.files(path = getwd(), pattern = 'condsDatSit')
-datNoSitFileNames <- list.files(path = getwd(), pattern = 'condsDatNoSit')
-datSitFileNames <- datSitFileNames[order(as.numeric(gsub("\\D", "", datSitFileNames)))] # Order files in ascending order of simulation run
-datNoSitFileNames <- datNoSitFileNames[order(as.numeric(gsub("\\D", "", datNoSitFileNames)))] # Order files in ascending order of simulation run
-datFileNames <- c(datNoSitFileNames, datSitFileNames)
+presRspCxtFileNames <- list.files(path = getwd(), pattern = 'condsDat_compRspCxt_sitPres')
+absRspCxtFileNames <- list.files(path = getwd(), pattern = 'condsDat_compRspCxt_sitAbs')
+presRspFileNames <- list.files(path = getwd(), pattern = 'condsDat_compRsp_sitPres')
+absRspFileNames <- list.files(path = getwd(), pattern = 'condsDat_compRsp_sitAbs')
+
+presRspCxtFileNames <- presRspCxtFileNames[order(as.numeric(gsub("\\D", "", presRspCxtFileNames)))] # Order files in ascending order of simulation run
+absRspCxtFileNames <- absRspCxtFileNames[order(as.numeric(gsub("\\D", "", absRspCxtFileNames)))] # Order files in ascending order of simulation run
+presRspFileNames <- presRspFileNames[order(as.numeric(gsub("\\D", "", presRspFileNames)))] # Order files in ascending order of simulation run
+absRspFileNames <- absRspFileNames[order(as.numeric(gsub("\\D", "", absRspFileNames)))] # Order files in ascending order of simulation run
+
+datFileNames <- c(presRspCxtFileNames, absRspCxtFileNames, presRspFileNames, absRspFileNames)
 ndx <- 1:length(datFileNames)
 
 # Initialize final combined dataset
 sjtEval <- data.frame()
-rspEval <- vector("list", 20000)
-names(rspEval) <- paste("agentID", 1:20000, sep = "_")
+rspEval <- vector("list", 40000)
+names(rspEval) <- paste("agentID", 1:40000, sep = "_")
 
 # Run data extraction procedures on each simulation run
 for (i in 1:length(datFileNames)) {
@@ -34,11 +40,17 @@ for (i in 1:length(datFileNames)) {
   finalJobDat <- merge(sjtEvalJob, agentDat, by = "agentID")
   finalJobDat <- finalJobDat[,-c(13,14)]
   
-  ## Add condition (situation absent, situation present) to data file
-  if (grepl("NoSit", datFileNames[i])) {
+  ## Add condition (situation absent/situation present, compare response/compare response context) to data file
+  if (grepl("sitAbs", datFileNames[i])) {
     finalJobDat$itemStem <- factor(rep("Absent", nrow(sjtEvalJob)), levels = c("Absent","Present"))
   } else {
     finalJobDat$itemStem <- factor(rep("Present", nrow(sjtEvalJob)), levels = c("Absent","Present"))
+  }
+  
+  if (grepl("RspCxt", datFileNames[i])) {
+    finalJobDat$compare <- factor(rep("rspCxt", nrow(sjtEvalJob)), levels = c("rspCxt","rsp"))
+  } else {
+    finalJobDat$compare <- factor(rep("rsp", nrow(sjtEvalJob)), levels = c("rspCxt","rsp"))
   }
   
   ## Extract cumulative similarity data
