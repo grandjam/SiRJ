@@ -459,7 +459,7 @@ output$sirjResultsUI <- renderUI({
               tags$ul(#style = "font-size: 14px",
                 tags$li("Note that the evidence accumulation for some responses appears more \"linear\" whereas for other response options it is more 
                         \"jagged\"/fluctuating.", strong("The nature of this accumulation process is attributable to the nature of the memories stored by an individual 
-                        and the response comparison process in SiRJ."), "Recall that SiRJ proposes individuals formulate and retreive interpretations about an SJT 
+                        and the response comparison process in SiRJ."), "Recall that SiRJ proposes individuals formulate and retrieve interpretations about an SJT 
                         item by first generating and then selecting from a plausible set of contenders derived from semantic memory (see 
                         Step 4 on \"HyGene\" tab). In cases where an individual possesses only one (or only one very strong) interpretation of an SJT situation or
                         its response options, they will (nearly) always select and use this interpretation when evaluating the effectiveness of the available
