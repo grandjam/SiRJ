@@ -1,15 +1,23 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # Create SJT items and response options #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# set.seed(912103) # Uncomment this line and set seed to any value to always have the same SJT created
 # SJT parameters
 numSjtItems = 20 # Number of SJT items to create and simulate
 numSjtRsp = 4 # Number of response given for each SJT item
 sjtSitSim = .9 # Similarity between an sjt item stem and the prototypical specific situation it reflected
 sjtRspSim = .9 # Similarity between the expertise level of responses and response options on the SJT
 
-# Create situations for SJT items
-# sjtSitNdx <- data.frame("sitType" = rep(1:numSitType, each = numSpecSit), "sitSpec" = rep(1:numSpecSit, numSitType)) # Create one item per broad and specific situation; numSJTitems must equal numSitType*numSitSpec for this one to work
-sjtSitNdx <- data.frame("sitType" = sample(1:numSitType, size = numSjtItems, replace = T), "sitSpec" = sample(1:numSpecSit, size = numSjtItems, replace = T)) # Randomly create items of broad and specific situations; numSJTitems does not have to equal numSitType*numSitSpec
+# Create situations for SJT items and specify whether test will present situations (sjtPresent = 1) or not (sjtPresent = 0) for each item
+## Randomly create items of broad and specific situations; numSJTitems does not have to equal numSitType*numSitSpec
+sjtSitNdx <- data.frame("sitType" = sample(1:numSitType, size = numSjtItems, replace = T), 
+                        "sitSpec" = sample(1:numSpecSit, size = numSjtItems, replace = T),
+                        "sitPresent" = sitPresent) # Sets all items within a given test to either present or not present situations as part of item based on condition
+## Create one item per broad and specific situation; numSJTitems must equal numSitType*numSitSpec for this one to work
+# sjtSitNdx <- expand.grid("sitType" = 1:numSitType, 
+#                          "sitSpec" = 1:numSpecSit, 
+#                          "sitPresent" = sitPresent)
+# sjtSitNdx <- order(sjtSitNdx$sitType)
 
 # Create features for each SJT item that shares some % of features with prototypical specific situations
 sjtSit <- t(sapply(1:nrow(sjtSitNdx), function(x) { 

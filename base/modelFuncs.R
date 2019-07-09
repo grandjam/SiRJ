@@ -22,7 +22,7 @@ encode <- function(event, L) {
 tDist <- function(tMem, tProto, epMemCnt) {
   dst <- sapply(1:sum(apply(epMemCnt, 2, function(y) sum(y != 0))), function (x) {
     tempMem <- as.matrix(tMem[x,])
-    tempTgt <- matrix(unlist(lapply(tProto, "[" , x, )), nrow = numExptLvls)
+    tempTgt <- matrix(unlist(lapply(tProto, "[",x,)), nrow = numExptLvls)
     colnames(tempMem) <- colnames(tempTgt) <- rownames(tempMem) <- rownames(tempTgt) <- NULL
     temp <- rbind(tempMem, tempTgt)
     tempDist <- dist(temp)
@@ -248,40 +248,74 @@ if (length(cCheck) == 0) {
 ### [3] givRspCxt: list containing (a) rspCxt entered into SOC for each givRsp, (b) rspCxt selection for each givRsp, (c) final rspCxt chosen for each givRsp, and (d) final sitCxt identified for each givRsp
 
 readItem <- function(sjtItem) {
-  ###############################################################################
-  # Step 1: Generate interpretation of situation (sitCxt) given situation (sit) #
-  ###############################################################################
-  # Specify indices for the features that should be compared against search probe in epMemory (in this case, sit)
-  sitFeats <- 1:(numSitMv*mvLength)
-  ## Optional code to make number of features that can be probed limited by WM (phi)
-  # if (phi < numSitMv) {
-  #   dSamp <- sort(sample(1:numSitMv, size = phi, replace = F))
-  #   sitFeats <- c(sapply(1:length(dSamp), function (x) {
-  #     ((dSamp[x]*mvLength)-(mvLength-1)):(dSamp[x]*mvLength)}))
-  # } else {
-  #   sitFeats <- 1:(numSitMv*mvLength)
-  # }
-
-  # Specify indices of all the memory features that should be considered when interpreting situation; should include all features making up the conditional likelihood search, e.g., (hypothesis|data)
-  ## In this case, sit and sitCxt are considered (sitCxt|sit)
-  sitSitCxtNdx <- 1:((numSitMv*mvLength)+(numSitCxtMv*mvLength))
-
-  # Generate sitCxts in SOC and probabilistically select interpretation based on activation strength for SJT item
-  sitCxtSOC <- HyGene(epMemFeats = sitFeats, memContentNdx = sitSitCxtNdx, srchProbe = sjtSit[sjtItem, sitFeats], Ac = Ac)
-  ## Check if memory search was unsuccessful
-  if (any(is.na(sitCxtSOC$srchResult$prob))) { # if unsuccessful, return results from unspecified probe (i.e., generate novel interpretation not stored in memory)
-    sitCxtSlct <- NA
-    genSitCxt <- sitCxtSOC$unspPrb[(numSitMv*mvLength+1):((numSitMv*mvLength)+(numSitCxtMv*mvLength))]
-  } else { # if sucessful, select result from SOC with highest probability/activation level
-    #sitCxtSlct <- sample(1:nrow(sitCxtSOC$srchResult), 1, prob = sitCxtSOC$srchResult$prob)
-    sitCxtSlct <- which.max(sitCxtSOC$srchResult$prob)
-    genSitCxt <- sitCxtSOC$SOC[sitCxtSlct, sitSitCxtNdx[-(1:(numSitMv*mvLength))]]
+  #############################################################################################################################################
+  # Step 1: Generate interpretation of situation (sitCxt) given either situation (sit) or available response options (givRsp) if no item stem #
+  #############################################################################################################################################
+  if (sjtSitNdx$sitPresent[sjtItem] == 1) { # if situational item stem is provided for SJT item, use given situation (sit) to generate interpretation (sitCxt)
+    # Specify indices for the features that should be compared against search probe in epMemory (in this case, sit)
+    sitFeats <- 1:(numSitMv*mvLength)
+    ## NOT TESTED: Alternative code to make number of features that can be probed limited by WM (phi)
+    # if (phi < numSitMv) {
+    #   dSamp <- sort(sample(1:numSitMv, size = phi, replace = F))
+    #   sitFeats <- c(sapply(1:length(dSamp), function (x) {
+    #     ((dSamp[x]*mvLength)-(mvLength-1)):(dSamp[x]*mvLength)}))
+    # } else {
+    #   sitFeats <- 1:(numSitMv*mvLength)
+    # }
+    
+    # Specify indices of all the memory features that should be considered when interpreting situation; should include all features making up the conditional likelihood search, e.g., (hypothesis|data)
+    ## In this case, sit and sitCxt are considered (sitCxt|sit)
+    sitSitCxtNdx <- 1:((numSitMv*mvLength)+(numSitCxtMv*mvLength))
+    
+    # Generate sitCxts in SOC and probabilistically select interpretation based on activation strength for SJT item
+    sitCxtSOC <- HyGene(epMemFeats = sitFeats, memContentNdx = sitSitCxtNdx, srchProbe = sjtSit[sjtItem, sitFeats], Ac = Ac)
+    ## Check if memory search was unsuccessful
+    if (any(is.na(sitCxtSOC$srchResult$prob))) { # if unsuccessful, return results from unspecified probe (i.e., generate novel interpretation not stored in memory)
+      sitCxtSlct <- NA
+      genSitCxt <- sitCxtSOC$unspPrb[(numSitMv*mvLength+1):((numSitMv*mvLength)+(numSitCxtMv*mvLength))]
+    } else { # if sucessful, select result from SOC with highest probability/activation level
+      #sitCxtSlct <- sample(1:nrow(sitCxtSOC$srchResult), 1, prob = sitCxtSOC$srchResult$prob) # uncommenting this line will select result probabilistically
+      sitCxtSlct <- which.max(sitCxtSOC$srchResult$prob)
+      genSitCxt <- sitCxtSOC$SOC[sitCxtSlct, sitSitCxtNdx[-(1:(numSitMv*mvLength))]]
+    }
+  } else { # if situational item stem is not provided for SJT item, use given response options (rspOpt) to generate interpretation
+    # Specify indices for the features that should be compared against search probe in epMemory (in this case, rsp)
+    rspFeats <- ((numSitMv*mvLength)+(numSitCxtMv*mvLength)+1):((numSitMv*mvLength)+(numSitCxtMv*mvLength)+(numRspMv*mvLength))
+    ## NOT TESTED: Alternative code to make number of features that can be probed limited by WM (phi)
+    # if (phi < numRspMv) {
+    #   dSamp <- sort(sample((numSitMv+numSitCxtMv+1):(numSitMv+numSitCxtMv+numRspMv), size = phi, replace = F))
+    #   rspFeats <- c(sapply(1:length(dSamp), function (x) {
+    #     ((dSamp[x]*mvLength)-(mvLength-1)):(dSamp[x]*mvLength)}))
+    # } else {
+    #   rspFeats <- ((numSitMv*mvLength)+(numSitCxtMv*mvLength)+1):((numSitMv*mvLength)+(numSitCxtMv*mvLength)+(numRspMv*mvLength))
+    # }
+    
+    # Specify indices of all the memory features that should be considered when interpreting situation; should include all features making up the conditional likelihood search, e.g., (hypothesis|data)
+    ## In this case, rsp and sitCxt are considered (sitCxt|rsp)
+    sitCxtRspNdx <- (numSitMv*mvLength+1):((numSitMv*mvLength)+(numSitCxtMv*mvLength)+(numRspMv*mvLength))
+    
+    # Generate sitCxts in SOC and probabilistically select interpretation based on activation strength for SJT item
+    sitCxtSOC <- lapply(1:nrow(sjtRsp[[sjtItem]]), function(x) {
+      HyGene(epMemFeats = rspFeats, memContentNdx = sitCxtRspNdx, srchProbe = as.numeric(sjtRsp[[sjtItem]][x,]), Ac = Ac)
+    })
+    
+    # Check if memory search was unsuccessful
+    sitCxtSlct <- sapply(sitCxtSOC, function(x) {which.max(x$srchResult$prob)})
+    if (all(unlist(lapply(sitCxtSlct, function(x) length(x) == 0)))) { # if no sitCxts were generated for any rsp option, return resuts from unspecified probe (i.e., generate novel interpretation not stored in memory)
+      genSitCxt = lapply(sitCxtSOC, "[[", "unspPrb")
+    } else { # if at least one sitCxt was generated, select result from SOC for each rsp option with highest probability/activation level
+      slctNdx = which(unlist(lapply(sitCxtSlct, function(x) length(x) > 0)))
+      genSitCxt = lapply(slctNdx, function(x) {sitCxtSOC[[x]]$SOC[sitCxtSlct[[x]],]})
+    }
+    # Aggregate returned sitCxt vectors into single interpretation
+    genSitCxt <- rbindlist(genSitCxt)
+    genSitCxt <- colMeans(genSitCxt)[sitCxtRspNdx[(1:(numSitCxtMv*mvLength))]]
   }
+  
 
-
-  ##########################################################################$$$$$$$$$$$$###################################
+  #########################################################################################################################
   # Step 2 & 3: Generate response (genRsp) and response context (genRspCxt) based on interpretation of situation (sitCxt) #
-  ######################################################################################$$$$$$$$$$$$#######################
+  #########################################################################################################################
   # Specify indices for the features that should be compared against search probe in epMemory (in this case, sitCxt)
   sitCxtFeats <- (numSitMv*mvLength+1):((numSitMv*mvLength)+(numSitCxtMv*mvLength))
 

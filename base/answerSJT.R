@@ -1,10 +1,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # Overall function for creating a person and answering all SJT items #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-takeSJT <- function(exptLvl, expStrength) {
+# Passing a value for the seedNdx argument will ensure the same random person is always created. If no value is passed for this argument, a different random person will be created each time
+takeSJT <- function(exptLvl, expStrength, seedNdx = NULL) {
   environment(readItem) <- environment()
   environment(HyGene) <- environment()
 # Create a person to take the SJT
+  if (!is.null(seedNdx)) {
+    set.seed(seedNdx)
+  }
   source("personInits.R", local = T)
   evalRslt <- array(NA, dim = c(sjtMax, numSjtRsp, numSjtItems))
   sjtEvalRaw <- vector("list", numSjtItems)
