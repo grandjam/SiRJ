@@ -1,6 +1,6 @@
 # Description
 The files in this folder contain the model code, simulation scripts, and data files for the simulation reported in: 
->Grand, J.A. (in press). A general response process theory for situational judgment tests. *Journal of Applied Psychology*. 
+>Grand, J.A. (2020). A general response process theory for situational judgment tests. *Journal of Applied Psychology, 105*, 819-862. 
 
 The environInits.R, personInits.R, SJTInits.R, and modelFuncs.R script files are identical to those described in base SiRJ. The remaining script files are slightly adapted to accomodate the different response process proposed to be used by respondents when evalauting SJT response optionsn items based on similarity in actions versus perceived consequences as described in the paper. More specifically:
 1. **answerSJT_rsp.R** & **answerSJT_rspCxt.R** -- these scripts are identical except for the way in which Step 5 of the SiRJ evaluation process on lines 36-43 are carried out. The answerSJT_rspCxt.R file is identical to the answerSJT.R file in the base model of SiRJ such that respondents compute the degree of similarity between the perceived consequences of their most likely/preferred behavior and the perceived consequences of each response option for an SJT item. In the answerSJT_rsp.R file, this behavior is changed such that respondents compute the degree of similarity between their most likely/preferred behavior and the actual behaviors described in each response option for an SJT item. 
